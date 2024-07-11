@@ -1,0 +1,43 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <RootNamespace>BaseService</RootNamespace>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <DocumentationFile></DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="AppClient\**" />
+    <EmbeddedResource Remove="AppClient\**" />
+    <None Remove="AppClient\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Localization\BaseService\cs.json" />
+    <None Remove="Localization\BaseService\en.json" />
+    <None Remove="Localization\BaseService\zh-Hans.json" />
+    <None Remove="Localization\BaseService\zh-Hant.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Localization\BaseService\cs.json" />
+    <EmbeddedResource Include="Localization\BaseService\en.json" />
+    <EmbeddedResource Include="Localization\BaseService\zh-Hans.json" />
+    <EmbeddedResource Include="Localization\BaseService\zh-Hant.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Volo.Abp.Ddd.Application" Version="6.0.3" />
+    <PackageReference Include="Volo.Abp.PermissionManagement.Application.Contracts" Version="6.0.3" />
+    <PackageReference Include="Volo.Abp.Identity.Application.Contracts" Version="6.0.3" />
+    <PackageReference Include="Volo.Abp.TenantManagement.Application.Contracts" Version="6.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Tools\Cimc.Helper\Cimc.Helper.csproj" />
+    <ProjectReference Include="..\..\Tools\Cimc.Model\Cimc.Model.csproj" />
+  </ItemGroup>
+
+</Project>
