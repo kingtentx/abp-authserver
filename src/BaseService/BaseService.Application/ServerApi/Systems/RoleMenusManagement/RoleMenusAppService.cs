@@ -1,5 +1,4 @@
-﻿
-using BaseService.Consts;
+﻿using BaseService.Consts;
 using BaseService.Enums;
 using BaseService.Systems.AuthorityManagerment.Dto;
 using BaseService.Systems.RoleMenusManagement;
@@ -25,7 +24,7 @@ namespace BaseService.Systems.UserMenusManagement
     /// 角色菜单/权限
     /// </summary> 
     [Area("Base")]
-    [Route("api/base/role-menus")]
+    [Route("api/base/role-menu")]
     [Authorize]
     public class RoleMenusAppService : ApplicationService, IRoleMenusAppService
     {

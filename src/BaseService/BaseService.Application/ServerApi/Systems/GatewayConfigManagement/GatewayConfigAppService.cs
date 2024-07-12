@@ -19,13 +19,13 @@ using Volo.Abp.Domain.Repositories;
 namespace BaseService.Systems.EdgeConfigManagement
 {
     [Area("Base")]
-    [Route("api/base/edge-config")]
+    [Route("api/base/gateway-config")]
     [Authorize(BaseServicePermissions.Edge.Default)]
-    public class EdgeConfigAppService : BaseApplicationService, IEdgeConfigAppService
+    public class GatewayConfigAppService : BaseApplicationService, IGatewayConfigAppService
     {
-        private readonly IRepository<EdgeConfig, Guid> _repository;
+        private readonly IRepository<GatewayConfig, Guid> _repository;
         private readonly IDistributedCache<AuthorityConfigDto> _cache;
-        public EdgeConfigAppService(IRepository<EdgeConfig, Guid> repository,
+        public GatewayConfigAppService(IRepository<GatewayConfig, Guid> repository,
             IDistributedCache<AuthorityConfigDto> cache,
              IDefaultAppService defaultAppService) : base(defaultAppService)
         {
@@ -41,7 +41,7 @@ namespace BaseService.Systems.EdgeConfigManagement
         [HttpPost]
         [Route("create")]
         [Authorize(BaseServicePermissions.Edge.Create)]
-        public async Task<ResultDto<Guid>> Create(CreateOrUpdateEdgeConfigDto input)
+        public async Task<ResultDto<Guid>> Create(CreateOrUpdateGatewayConfigDto input)
         {
             var result = new ResultDto<Guid>();
 
@@ -52,7 +52,7 @@ namespace BaseService.Systems.EdgeConfigManagement
                 return result;
             }
 
-            var entity = new EdgeConfig(
+            var entity = new GatewayConfig(
                         GuidGenerator.Create(),
                         CurrentTenant.Id,
                         input.Name,
@@ -104,12 +104,12 @@ namespace BaseService.Systems.EdgeConfigManagement
         /// <returns></returns>
         [HttpGet]
         [Route("{id}")]
-        public async Task<ResultDto<EdgeConfigDto>> Get(Guid id)
+        public async Task<ResultDto<GatewayConfigDto>> Get(Guid id)
         {
-            var result = new ResultDto<EdgeConfigDto>();
+            var result = new ResultDto<GatewayConfigDto>();
 
             var query = await _repository.GetAsync(id);
-            var dto = ObjectMapper.Map<EdgeConfig, EdgeConfigDto>(query);
+            var dto = ObjectMapper.Map<GatewayConfig, GatewayConfigDto>(query);
 
             result.SetData(dto);
             return result;
@@ -122,23 +122,23 @@ namespace BaseService.Systems.EdgeConfigManagement
         /// <returns></returns>
         [HttpGet]
         [Route("list")]
-        public async Task<ResultDto<PagedResultDto<EdgeConfigDto>>> GetList(GetEdgeConfigInputDto input)
+        public async Task<ResultDto<PagedResultDto<GatewayConfigDto>>> GetList(GetGatewayConfigInputDto input)
         {
-            var result = new ResultDto<PagedResultDto<EdgeConfigDto>>();
+            var result = new ResultDto<PagedResultDto<GatewayConfigDto>>();
 
             var query = (await _repository.GetQueryableAsync());
 
             if (CurrentUser.UserName != SystemConsts.SuperAdmin)
                 query = query.Where(p => p.AuthorityId == CurrentAuthority.Id);
 
-            var items = await query.OrderBy(input.Sorting ?? nameof(EdgeConfig.CreationTime) + " desc")
+            var items = await query.OrderBy(input.Sorting ?? nameof(GatewayConfig.CreationTime) + " desc")
                 .Skip(input.SkipCount)
                 .Take(input.MaxResultCount)
                 .ToListAsync();
 
-            var list = ObjectMapper.Map<List<EdgeConfig>, List<EdgeConfigDto>>(items);
+            var list = ObjectMapper.Map<List<GatewayConfig>, List<GatewayConfigDto>>(items);
             var totalCount = await query.CountAsync();
-            var data = new PagedResultDto<EdgeConfigDto>(totalCount, list);
+            var data = new PagedResultDto<GatewayConfigDto>(totalCount, list);
 
             result.SetData(data);
             return result;
@@ -152,7 +152,7 @@ namespace BaseService.Systems.EdgeConfigManagement
         [HttpPost]
         [Route("update")]
         [Authorize(BaseServicePermissions.Edge.Update)]
-        public async Task<ResultDto<bool>> Update(CreateOrUpdateEdgeConfigDto input)
+        public async Task<ResultDto<bool>> Update(CreateOrUpdateGatewayConfigDto input)
         {
             var result = new ResultDto<bool>();
 

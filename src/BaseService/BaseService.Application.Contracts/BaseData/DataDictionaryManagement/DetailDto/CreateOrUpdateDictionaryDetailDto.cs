@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Volo.Abp.Application.Dtos;
 
@@ -28,5 +29,11 @@ namespace BaseService.BaseData.DataDictionaryManagement.Dto
         /// </summary>
         [Required]
         public int Sort { get; set; }
+
+        /// <summary>
+        /// 是否激活
+        /// </summary>
+        [Required]
+        public bool IsActive { get; set; }
     }
 }

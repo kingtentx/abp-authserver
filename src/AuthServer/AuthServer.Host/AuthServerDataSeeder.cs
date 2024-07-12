@@ -1,4 +1,5 @@
 ﻿using IdentityServer4.Models;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -27,6 +28,7 @@ namespace AuthServer.Host
         private readonly IIdentityResourceDataSeeder _identityResourceDataSeeder;
         private readonly IGuidGenerator _guidGenerator;
         private readonly IPermissionDataSeeder _permissionDataSeeder;
+        private string[] MicroServices { get; }
 
         public AuthServerDataSeeder(
             IClientRepository clientRepository,
@@ -34,7 +36,8 @@ namespace AuthServer.Host
             IApiScopeRepository apiScopeRepository,
             IIdentityResourceDataSeeder identityResourceDataSeeder,
             IGuidGenerator guidGenerator,
-            IPermissionDataSeeder permissionDataSeeder)
+            IPermissionDataSeeder permissionDataSeeder,
+            IConfiguration configuration)
         {
             _clientRepository = clientRepository;
             _apiResourceRepository = apiResourceRepository;
@@ -42,6 +45,7 @@ namespace AuthServer.Host
             _identityResourceDataSeeder = identityResourceDataSeeder;
             _guidGenerator = guidGenerator;
             _permissionDataSeeder = permissionDataSeeder;
+            MicroServices = configuration.GetSection("MicroServices").Get<string[]>();
         }
 
         [UnitOfWork]
@@ -55,12 +59,14 @@ namespace AuthServer.Host
 
         private async Task CreateApiScopesAsync()
         {
-            await CreateApiScopeAsync("BaseService");
+            //await CreateApiScopeAsync("BaseService");
             //await CreateApiScopeAsync("InternalGateway");
             //await CreateApiScopeAsync("WebAppGateway");
-            await CreateApiScopeAsync("IoTService");
-            await CreateApiScopeAsync("FileService");
-            await CreateApiScopeAsync("MessageService");
+
+            foreach (var service in MicroServices)
+            {
+                await CreateApiScopeAsync(service);
+            }
 
         }
 
@@ -78,12 +84,14 @@ namespace AuthServer.Host
                 "given_name"
             };
 
-            await CreateApiResourceAsync("BaseService", commonApiUserClaims);
+            //await CreateApiResourceAsync("BaseService", commonApiUserClaims);
             //await CreateApiResourceAsync("InternalGateway", commonApiUserClaims);
             //await CreateApiResourceAsync("WebAppGateway", commonApiUserClaims);
-            await CreateApiResourceAsync("IoTService", commonApiUserClaims);
-            await CreateApiResourceAsync("FileService", commonApiUserClaims);
-            await CreateApiResourceAsync("MessageService", commonApiUserClaims);
+
+            foreach (var service in MicroServices)
+            {
+                await CreateApiResourceAsync(service, commonApiUserClaims);
+            }
         }
 
         private async Task<ApiResource> CreateApiResourceAsync(string name, IEnumerable<string> claims)
@@ -144,7 +152,7 @@ namespace AuthServer.Host
 
             await CreateClientAsync(
               name: "basic-app",
-              scopes: new[] { "BaseService", "IoTService", "FileService", "MessageService" },
+              scopes: MicroServices,
               grantTypes: new[] { "password" },
               secret: null,
               requireClientSecret: false
@@ -152,7 +160,7 @@ namespace AuthServer.Host
 
             await CreateClientAsync(
                 name: "basic-web",
-                scopes: new[] { "BaseService", "IoTService", "FileService", "MessageService" },
+                scopes: MicroServices,
                 grantTypes: new[] { "password" },
                 secret: null,
                 requireClientSecret: false

@@ -55,13 +55,13 @@ namespace BaseService.EntityFrameworkCore
 
             builder.Entity<Menu>(b =>
             {
-                b.ToTable("base_menu");
+                b.ToTable("sys_menu");
                 b.ConfigureByConvention();
             });
 
             builder.Entity<RoleMenu>(b =>
             {
-                b.ToTable("base_role_menu");
+                b.ToTable("sys_role_menu");
                 b.HasKey(k => new { k.RoleId, k.MenuId });
             });
 
@@ -69,37 +69,33 @@ namespace BaseService.EntityFrameworkCore
 
             builder.Entity<Authority>(b =>
             {
-                b.ToTable("base_authority");
+                b.ToTable("sys_authority");
                 b.ConfigureByConvention();
             });
 
             builder.Entity<AuthorityDetail>(b =>
             {
-                b.ToTable("base_authority_detail");
+                b.ToTable("sys_authority_detail");
                 b.ConfigureByConvention();
 
             });
 
             builder.Entity<RoleAuthority>(b =>
             {
-                b.ToTable("base_role_authority");
+                b.ToTable("sys_role_authority");
                 b.HasKey(k => new { k.RoleId, k.AuthorityId });
             });
 
-            builder.Entity<EdgeConfig>(b =>
+            builder.Entity<GatewayConfig>(b =>
             {
-                b.ToTable("base_edge_config");
+                b.ToTable("sys_gateway_config");
                 b.ConfigureByConvention();
             });
 
-            builder.Entity<AuthorityEdge>(b =>
-            {
-                b.ToTable("base_authority_edge");
-                b.HasKey(k => new { k.EdgeId, k.AuthorityId });
-            });
+          
             builder.Entity<AuthorityGroup>(b =>
             {
-                b.ToTable("base_authority_group");
+                b.ToTable("sys_authority_group");
                 b.ConfigureByConvention();
 
             });

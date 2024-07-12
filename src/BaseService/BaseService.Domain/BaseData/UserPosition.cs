@@ -10,7 +10,7 @@ namespace BaseService.BaseData
     /// <summary>
     /// 用户岗位表
     /// </summary>
-     public class UserPosition : Entity, IMultiTenant, IAuthority
+    public class UserPosition : Entity, IMultiTenant, IAuthority
     {
         /// <summary>
         /// 租户ID

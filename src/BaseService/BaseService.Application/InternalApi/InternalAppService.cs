@@ -1,5 +1,4 @@
-﻿
-using BaseService.Consts;
+﻿using BaseService.Consts;
 using BaseService.Systems;
 using BaseService.Systems.AuthorityManagerment.Dto;
 using BaseService.Systems.UserManagement.Dto;
@@ -33,13 +32,13 @@ namespace BaseService.InternalApi
     {
         private readonly IDistributedCache<AuthorityConfigDto> _configCache;
         private readonly IRepository<Authority, Guid> _repository;
-        private readonly IRepository<EdgeConfig, Guid> _edgeRepository;
+        private readonly IRepository<GatewayConfig, Guid> _edgeRepository;
         private readonly IRepository<User, Guid> _userRepository;
 
         public InternalAppService(
             IDistributedCache<AuthorityConfigDto> configCache,
             IRepository<Authority, Guid> repository,
-            IRepository<EdgeConfig, Guid> edgeRepository,
+            IRepository<GatewayConfig, Guid> edgeRepository,
             IRepository<User, Guid> userRepository
          )
         {

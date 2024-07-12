@@ -41,7 +41,7 @@ namespace BaseService.ServerApi.Default
         private readonly IRepository<Role, Guid> _roleRepository;
         private readonly IRepository<RoleMenu> _roleMenuRepository;
 
-        private readonly IRepository<EdgeConfig, Guid> _edgeRepository;
+        private readonly IRepository<GatewayConfig, Guid> _edgeRepository;
         //private readonly IDistributedCache<CurrentAuthorityDto> _currentAuthorityCache;
         private readonly IDistributedCache<AuthorityConfigDto> _configCache;
         private ICurrentUserAuthorityService CurrentUserAuthority;
@@ -51,7 +51,7 @@ namespace BaseService.ServerApi.Default
             IRepository<Menu, Guid> menuRepository,
             IRepository<Role, Guid> roleRepository,
             IRepository<RoleMenu> roleMenuRepository,
-            IRepository<EdgeConfig, Guid> edgeRepository,
+            IRepository<GatewayConfig, Guid> edgeRepository,
             //IDistributedCache<CurrentAuthorityDto> currentAuthorityCache,
             IDistributedCache<AuthorityConfigDto> configCache,
              ICurrentUserAuthorityService currentUserAuthority,

@@ -13,7 +13,7 @@ using Volo.Abp.AuditLogging;
 namespace BaseService.Systems.AuditLoggingManagement
 {
     [Area("Base")]
-    [Route("api/base/auditLogging")]
+    [Route("api/base/audit-logging")]
     [Authorize(BaseServicePermissions.AuditLogging.Default)]
     public class AuditLoggingAppService : ApplicationService, IAuditLoggingAppService
     {

@@ -37,6 +37,11 @@ namespace BaseService.BaseData
         [Comment("排序")]
         public int Sort { get; set; }
         /// <summary>
+        /// 是否激活
+        /// </summary>
+        [DefaultValue(true)]
+        public bool IsActive { get; set; }
+        /// <summary>
         /// 是否删除
         /// </summary>
         [DefaultValue(false)]
@@ -50,7 +55,7 @@ namespace BaseService.BaseData
         /// </summary>
         public Guid? AuthorityId { get; set; }
 
-        public DataDictionaryDetail(Guid id, Guid? tenantId, Guid dictionaryId, string label, string value, int sort, Guid? authorityId)
+        public DataDictionaryDetail(Guid id, Guid? tenantId, Guid dictionaryId, string label, string value, int sort, bool isActive, Guid? authorityId)
         {
             TenantId = tenantId;
             Id = id;
@@ -58,6 +63,7 @@ namespace BaseService.BaseData
             Label = label;
             Value = value;
             Sort = sort;
+            IsActive = isActive;
             AuthorityId = authorityId;
 
         }

@@ -1,5 +1,4 @@
-﻿
-using BaseService.Permissions;
+﻿using BaseService.Permissions;
 using BaseService.Systems.AuthorityManagerment.Dto;
 using Cimc.Model.Base;
 using Microsoft.AspNetCore.Authorization;

@@ -2,7 +2,7 @@
 
 namespace BaseService.Systems.EdgeConfigManagement.Dto
 {
-    public class GetEdgeConfigInputDto : PagedRequestDto
+    public class GetGatewayConfigInputDto : PagedRequestDto
     {
         /// <summary>
         /// 关键字

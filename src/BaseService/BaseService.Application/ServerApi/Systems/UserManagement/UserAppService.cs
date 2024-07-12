@@ -418,13 +418,13 @@ namespace BaseService.Systems.UserManagement
         /// <returns></returns>
         [HttpGet]
         [Route("profile")]
-        public async Task<ResultDto<CurrentUserDto>> GetCurrentUser()
+        public ResultDto<CurrentUserDto> GetCurrentUser()
         {
             var result = new ResultDto<CurrentUserDto>();
-           
+            var dto = ObjectMapper.Map<ICurrentUser, CurrentUserDto>(CurrentUser);
+
             //var userId = CurrentUser.Id.Value;
             //var dto = ObjectMapper.Map<User, CurrentUserDto>(await _userRepository.GetAsync(userId));
-            var dto = ObjectMapper.Map<ICurrentUser, CurrentUserDto>(CurrentUser);
             //var roleIds = await (await _userRoleRepository.GetQueryableAsync()).Where(p => p.UserId == userId).Select(p => p.RoleId).ToListAsync();
             //var roles = await _roleRepository.GetListAsync(p => roleIds.Contains(p.Id));
             //dto.Roles = roles.Select(p => p.Name).ToList();

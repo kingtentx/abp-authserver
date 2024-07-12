@@ -49,7 +49,7 @@ namespace BaseService.BaseData
 
         public UserFeature(Guid id) : base(id)
         {
-            
+
         }
 
     }

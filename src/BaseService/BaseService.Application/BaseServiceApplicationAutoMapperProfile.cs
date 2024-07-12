@@ -60,7 +60,7 @@ namespace BaseService
             CreateMap<AuthorityDetail, AuthorityDetailDto>().ReverseMap();
             CreateMap<AuthorityGroup, AuthorityGroupDto>().ReverseMap();
 
-            CreateMap<EdgeConfig, EdgeConfigDto>().ReverseMap();
+            CreateMap<GatewayConfig, GatewayConfigDto>().ReverseMap();
 
             CreateMap<CreateOrUpdateUserFeatureDto, UserFeature>().ReverseMap();
             CreateMap<UserFeature, UserFeatureDto>().ReverseMap();

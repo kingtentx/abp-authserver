@@ -18,7 +18,7 @@ namespace BaseService.BaseData
         /// <summary>
         /// 名称
         /// </summary>
-        [Comment("名称"), MaxLength(ModelUnits.Len_100),Required]
+        [Comment("名称"), MaxLength(ModelUnits.Len_100), Required]
         public string Name { get; set; }
         /// <summary>
         /// 描述

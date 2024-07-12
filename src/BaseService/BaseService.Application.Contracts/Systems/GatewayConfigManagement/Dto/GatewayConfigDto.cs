@@ -4,9 +4,9 @@ using Volo.Abp.Application.Dtos;
 namespace BaseService.Systems.EdgeConfigManagement.Dto
 {
     /// <summary>
-    /// 创建/更新 边缘网关
+    /// 边缘网关
     /// </summary>
-    public class CreateOrUpdateEdgeConfigDto : EntityDto<Guid?>
+    public class GatewayConfigDto : FullAuditedEntityDto<Guid>
     {
         /// <summary>
         /// 网关名称

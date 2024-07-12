@@ -1,5 +1,4 @@
-﻿
-using BaseService.Consts;
+﻿using BaseService.Consts;
 using BaseService.Systems.RoleManagement.Dto;
 using Cimc.Model.Base;
 using Microsoft.AspNetCore.Authorization;

@@ -15,19 +15,18 @@ namespace BaseService.EntityFrameworkCore
         public DbSet<DataDictionary> DataDictionaries { get; set; }
         public DbSet<DataDictionaryDetail> DataDictionaryDetails { get; set; }
         public DbSet<Organization> Organizations { get; set; }
-        public DbSet<Position> Jobs { get; set; }
-        public DbSet<UserPosition> UserJobs { get; set; }
-        public DbSet<UserOrganization> UserOrganizations { get; set; }
+        public DbSet<Position> Positions { get; set; }
+        public DbSet<UserPosition> UserPosition { get; set; }
+        public DbSet<UserOrganization> UserOrganization { get; set; }
         public DbSet<Menu> Menus { get; set; }
-        public DbSet<RoleMenu> RoleMenus { get; set; }
+        public DbSet<RoleMenu> RoleMenu { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<User> Users { get; set; }
-        public DbSet<UserRole> AppUserRoles { get; set; }
-        public DbSet<Authority> Authority { get; set; }
-        public DbSet<AuthorityDetail> AuthorityDetail { get; set; }
+        public DbSet<UserRole> UserRole { get; set; }
+        public DbSet<Authority> Authoritys { get; set; }
+        public DbSet<AuthorityDetail> AuthorityDetails { get; set; }
         public DbSet<RoleAuthority> RoleAuthority { get; set; }
-        public DbSet<EdgeConfig> EdgeConfig { get; set; }
-        public DbSet<AuthorityEdge> AuthorityEdge { get; set; }
+        public DbSet<GatewayConfig> EdgeConfig { get; set; }      
         public DbSet<AuthorityGroup> AuthorityGroup { get; set; }
         public DbSet<UserFeature> UserFeature { get; set; }
 

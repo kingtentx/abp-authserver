@@ -1,5 +1,4 @@
-﻿
-using BaseService.Consts;
+﻿using BaseService.Consts;
 using BaseService.Enums;
 using BaseService.Systems;
 using BaseService.Systems.AuthorityManagerment.Dto;

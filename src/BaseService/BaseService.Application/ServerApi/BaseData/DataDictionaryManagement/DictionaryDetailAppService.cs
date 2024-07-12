@@ -1,5 +1,4 @@
-﻿
-using BaseService.BaseData.DataDictionaryManagement.Dto;
+﻿using BaseService.BaseData.DataDictionaryManagement.Dto;
 using BaseService.Permissions;
 using BaseService.Systems;
 using Cimc.Model.Base;
@@ -21,7 +20,7 @@ namespace BaseService.BaseData.DataDictionaryManagement
     /// 字典表子集
     /// </summary>
     [Area("Base")]
-    [Route("api/base/dictDetails")]
+    [Route("api/base/dict-detail")]
     [Authorize]
     public class DictionaryDetailAppService : BaseApplicationService, IDictionaryDetailAppService
     {
@@ -73,6 +72,7 @@ namespace BaseService.BaseData.DataDictionaryManagement
                                                                     input.Label?.Trim(),
                                                                     input.Value?.Trim(),
                                                                     input.Sort,
+                                                                    input.IsActive,
                                                                     CurrentAuthority.Id));
 
             //var dto = ObjectMapper.Map<DataDictionaryDetail, DictionaryDetailDto>(query);
@@ -106,6 +106,7 @@ namespace BaseService.BaseData.DataDictionaryManagement
             detail.Label = input.Label?.Trim();
             detail.Value = input.Value?.Trim();
             detail.Sort = input.Sort;
+            detail.IsActive = input.IsActive;
 
             await _detailRepository.UpdateAsync(detail);
 
@@ -150,7 +151,7 @@ namespace BaseService.BaseData.DataDictionaryManagement
         {
             var result = new ResultDto<DictionaryDetailDto>();
 
-            var query = await _detailRepository.GetAsync(id);
+            var query = await _detailRepository.FindAsync(p => p.Id == id);
             var dto = ObjectMapper.Map<DataDictionaryDetail, DictionaryDetailDto>(query);
 
             result.SetData(dto);
@@ -205,7 +206,7 @@ namespace BaseService.BaseData.DataDictionaryManagement
             if (master != null)
             {
                 var details = await (await _detailRepository.GetQueryableAsync())
-                                .Where(p => p.DictionaryId == master.Id)
+                                .Where(p => p.DictionaryId == master.Id && p.IsActive)
                                 .OrderBy(p => p.Sort)
                                 .ToListAsync();
 

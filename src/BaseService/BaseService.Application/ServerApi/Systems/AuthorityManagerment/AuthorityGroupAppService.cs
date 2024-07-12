@@ -1,5 +1,4 @@
 ﻿using BaseService.Permissions;
-using BaseService.Systems;
 using BaseService.Systems.AuthorityManagerment;
 using BaseService.Systems.AuthorityManagerment.Dto;
 using Cimc.Model.Base;
@@ -15,6 +14,7 @@ using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
 using System.Linq.Dynamic.Core;
 using Microsoft.AspNetCore.Mvc;
+using BaseService.Systems;
 
 namespace BaseService.ServerApi.Systems.AuthorityManagerment
 {

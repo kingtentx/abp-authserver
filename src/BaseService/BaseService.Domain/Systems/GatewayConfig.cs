@@ -9,8 +9,8 @@ using Volo.Abp.MultiTenancy;
 
 namespace BaseService.Systems
 {
- 
-    public class EdgeConfig : FullAuditedAggregateRoot<Guid>, IMultiTenant, IAuthority
+
+    public class GatewayConfig : FullAuditedAggregateRoot<Guid>, IMultiTenant, IAuthority
     {
         /// <summary>
         /// 网关名称
@@ -55,7 +55,7 @@ namespace BaseService.Systems
         [Comment("系统服务"), MaxLength(ModelUnits.Len_20)]
         public string ServiceValue { get; set; }
 
-        public EdgeConfig(Guid id, Guid? tenantId, [NotNull] string name, [NotNull] string address, [NotNull] string appId, [NotNull] string appSecret, string remark, bool isActive, Guid? authorityId, string serviceValue)
+        public GatewayConfig(Guid id, Guid? tenantId, [NotNull] string name, [NotNull] string address, [NotNull] string appId, [NotNull] string appSecret, string remark, bool isActive, Guid? authorityId, string serviceValue)
         {
             TenantId = tenantId;
             Id = id;
