@@ -9,12 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="AppClient\**" />
-    <EmbeddedResource Remove="AppClient\**" />
-    <None Remove="AppClient\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Remove="Localization\BaseService\cs.json" />
     <None Remove="Localization\BaseService\en.json" />
     <None Remove="Localization\BaseService\zh-Hans.json" />

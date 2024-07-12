@@ -1,0 +1,18 @@
+﻿html{font-size:10px}
+html, body {background-color: #f0eff4;overflow: hidden;}
+body{padding-bottom:0;margin:0;padding-top:49px}
+*{padding:0;margin:0}
+header{position:fixed;top:0;left:0;z-index:999;width:100%;height:49px;background-color:#333;color:#fff}
+header .back{position:absolute;top:0;left:0;display:inline-block;padding-left:5px;font-size:30px}
+header p{margin:0;line-height:49px;font-size:16px;text-align:center}
+.register{padding:8px 6px;font-size:14px;height: 100%;}
+.res-item{position:relative;width:100%;border-radius:4px;margin-bottom:8px;background-color:#fff}
+.res-icon{position:absolute;left:8px;top:5px;z-index:100;display:inline-block;font-size:18px;color:#9c9c9c}
+.res-item .input-item{display:inline-block;width:100%;padding-left:31px;height:40px;border:none;font-size:inherit}
+.res-item .input-item:focus{outline-offset:0;outline:-webkit-focus-ring-color auto -2px;background-color:#fefffe;border:1px solid #1088d9;outline:0;-webkit-box-shadow:inset 0 1px 1px rgba(0,0,0,.075),0 0 5px rgba(226,25,69,.3);box-shadow:inset 0 1px 1px rgba(0,0,0,.075),0 0 5px rgba(226,25,69,0.3)}
+.res-item .input-item:focus + .res-icon{color:#1088d9}
+.yanzhengma{position:absolute;right:10px;top:5px;z-index:100;display:inline-block;padding:0.5rem 0.8rem;font-size:14px;border:none;background-color:#1088d9;color:#fff;border-radius:8px}
+.yanzhengma:disabled{background-color:#ddd}
+.res-btn{margin-top:10px;padding:0 5px}
+.res-btn button{background-color:#1088d9;font-size:14px;color:#fff;border-radius:8px;height:4rem}
+.res-btn button:focus{color:#fff}

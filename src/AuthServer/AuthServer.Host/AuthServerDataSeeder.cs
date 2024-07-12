@@ -1,5 +1,4 @@
 ﻿using IdentityServer4.Models;
-using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -28,7 +27,6 @@ namespace AuthServer.Host
         private readonly IIdentityResourceDataSeeder _identityResourceDataSeeder;
         private readonly IGuidGenerator _guidGenerator;
         private readonly IPermissionDataSeeder _permissionDataSeeder;
-        private string[] MicroServices = new string[] { };
 
         public AuthServerDataSeeder(
             IClientRepository clientRepository,
@@ -36,9 +34,7 @@ namespace AuthServer.Host
             IApiScopeRepository apiScopeRepository,
             IIdentityResourceDataSeeder identityResourceDataSeeder,
             IGuidGenerator guidGenerator,
-            IPermissionDataSeeder permissionDataSeeder,
-            IConfiguration configuration
-            )
+            IPermissionDataSeeder permissionDataSeeder)
         {
             _clientRepository = clientRepository;
             _apiResourceRepository = apiResourceRepository;
@@ -46,7 +42,6 @@ namespace AuthServer.Host
             _identityResourceDataSeeder = identityResourceDataSeeder;
             _guidGenerator = guidGenerator;
             _permissionDataSeeder = permissionDataSeeder;
-            MicroServices = configuration.GetSection("MicroServices").Get<string[]>();
         }
 
         [UnitOfWork]
@@ -60,12 +55,13 @@ namespace AuthServer.Host
 
         private async Task CreateApiScopesAsync()
         {
-            //await CreateApiScopeAsync("BaseService");          
+            await CreateApiScopeAsync("BaseService");
+            //await CreateApiScopeAsync("InternalGateway");
+            //await CreateApiScopeAsync("WebAppGateway");
+            await CreateApiScopeAsync("IoTService");
+            await CreateApiScopeAsync("FileService");
+            await CreateApiScopeAsync("MessageService");
 
-            foreach (var service in MicroServices)
-            {
-                await CreateApiScopeAsync(service);
-            }
         }
 
         private async Task CreateApiResourcesAsync()
@@ -81,12 +77,12 @@ namespace AuthServer.Host
                 "given_name"
             };
 
-            //await CreateApiResourceAsync("BaseService", commonApiUserClaims);          
-
-            foreach (var service in MicroServices)
-            {
-                await CreateApiResourceAsync(service, commonApiUserClaims);
-            }
+            await CreateApiResourceAsync("BaseService", commonApiUserClaims);
+            //await CreateApiResourceAsync("InternalGateway", commonApiUserClaims);
+            //await CreateApiResourceAsync("WebAppGateway", commonApiUserClaims);
+            await CreateApiResourceAsync("IoTService", commonApiUserClaims);
+            await CreateApiResourceAsync("FileService", commonApiUserClaims);
+            await CreateApiResourceAsync("MessageService", commonApiUserClaims);
         }
 
         private async Task<ApiResource> CreateApiResourceAsync(string name, IEnumerable<string> claims)
@@ -145,21 +141,9 @@ namespace AuthServer.Host
                 "address"
             };
 
-            //await CreateClientAsync(
-            //        name: "blazor-app",
-            //        scopes: commonScopes.Append("BaseService").Append("WebAppGateway").Append("BusinessService"),
-            //        grantTypes: new[] { "authorization_code" },
-            //        secret: null,
-            //        requireClientSecret: false,
-            //        redirectUri: $"http://localhost:44307/authentication/login-callback",
-            //        postLogoutRedirectUri: $"http://localhost:44307/authentication/logout-callback",
-            //        corsOrigins: new[] { "http://localhost:44307" }
-            //    );
-
             await CreateClientAsync(
               name: "basic-app",
-              //scopes: new[] { "BaseService", "DemoService", "ADSSysService", "EnergyService", "HSEService", "FileService", "MessageService", "DieselService", "PaintService", "SewageService", "FlightCaseService" },
-              scopes: MicroServices,
+              scopes: new[] { "BaseService", "IoTService", "FileService", "MessageService" },
               grantTypes: new[] { "password" },
               secret: null,
               requireClientSecret: false
@@ -167,8 +151,7 @@ namespace AuthServer.Host
 
             await CreateClientAsync(
                 name: "basic-web",
-                //scopes: new[] { "BaseService", "DemoService", "ADSSysService", "EnergyService", "HSEService", "FileService", "MessageService", "DieselService", "PaintService", "SewageService", "FlightCaseService" },
-                scopes: MicroServices,
+                scopes: new[] { "BaseService", "IoTService", "FileService", "MessageService" },
                 grantTypes: new[] { "password" },
                 secret: null,
                 requireClientSecret: false

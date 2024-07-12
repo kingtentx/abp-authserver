@@ -26,16 +26,15 @@ namespace AuthServer.Host
 
             Log.Logger = new LoggerConfiguration()
 #if DEBUG
-                .MinimumLevel.Debug()               
+                .MinimumLevel.Debug()
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
 #else
-                .MinimumLevel.Information()
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
                 .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Error) //过滤EF sql输出               
 #endif
                 .Enrich.WithProperty("Application", "AuthServer")
                 .Enrich.FromLogContext()
-                .WriteTo.Async(c => c.File($"Logs/.log", rollingInterval: RollingInterval.Day, retainedFileCountLimit: 90))
+                .WriteTo.Async(c => c.File($"Logs/.log", rollingInterval: RollingInterval.Day, retainedFileCountLimit: 180))
                 .WriteTo.Console()
                 .CreateLogger();
 

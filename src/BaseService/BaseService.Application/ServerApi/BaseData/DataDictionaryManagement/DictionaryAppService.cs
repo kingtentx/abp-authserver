@@ -74,8 +74,7 @@ namespace BaseService.BaseData.DataDictionaryManagement
 
         /// <summary>
         /// 更新字典
-        /// </summary>
-        /// <param name="id"></param>
+        /// </summary>    
         /// <param name="input"></param>
         /// <returns></returns>
         [HttpPost]

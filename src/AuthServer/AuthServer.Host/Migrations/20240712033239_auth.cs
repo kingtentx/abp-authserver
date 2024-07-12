@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace AuthServer.Host.Migrations
 {
-    public partial class _002 : Migration
+    public partial class auth : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

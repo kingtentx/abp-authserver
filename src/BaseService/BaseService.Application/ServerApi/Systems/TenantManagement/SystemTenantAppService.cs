@@ -75,7 +75,7 @@ namespace BaseService.Systems.TenantManagement
         /// <returns></returns>
         [HttpGet]
         [Route("list")]
-        public async Task<ResultDto<PagedResultDto<TenantDto>>> GetList(GetSystemTenantsInput input)
+        public async Task<ResultDto<PagedResultDto<TenantDto>>> GetList(GetSystemTenantInput input)
         {
             var result = new ResultDto<PagedResultDto<TenantDto>>();
 

@@ -87,12 +87,12 @@ namespace BaseService
             //    options.HeaderName = "X-XSRF-TOKEN";
             //});
 
-            //Configure<CookiePolicyOptions>(options =>
-            //{
-            //    options.MinimumSameSitePolicy = SameSiteMode.None;
-            //    options.HttpOnly = HttpOnlyPolicy.Always;
-            //    options.Secure = CookieSecurePolicy.Always; // 设置Secure属性
-            //});
+            Configure<CookiePolicyOptions>(options =>
+            {
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+                options.HttpOnly = HttpOnlyPolicy.Always;
+                options.Secure = CookieSecurePolicy.Always; // 设置Secure属性
+            });
 
             ConfigureMultiTenancy();
             ConfigureConventionalControllers();
@@ -130,7 +130,7 @@ namespace BaseService
                 .AddJwtBearer(options =>
                 {
                     options.Authority = configuration["AuthServer:Authority"];
-                    options.RequireHttpsMetadata = Convert.ToBoolean(configuration["AuthServer:HttpsMetadata"]);
+                    options.RequireHttpsMetadata = false;
                     options.Audience = SystemConsts.ServiceName;
                 });
         }

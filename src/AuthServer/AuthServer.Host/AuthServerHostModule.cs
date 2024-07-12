@@ -1,24 +1,15 @@
 ﻿using AuthServer.Host.EntityFrameworkCore;
-using Autofac.Core;
-using BaseService;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.DataProtection;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Microsoft.OpenApi.Models;
-using Newtonsoft.Json;
 using StackExchange.Redis;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Account;
 using Volo.Abp.Account.Web;
@@ -57,9 +48,7 @@ namespace AuthServer.Host
         typeof(AbpAccountWebIdentityServerModule),
         typeof(AbpAspNetCoreMvcUiBasicThemeModule),
         typeof(AbpTenantManagementEntityFrameworkCoreModule),
-        typeof(AbpTenantManagementApplicationContractsModule),
-        typeof(BaseServiceApplicationContractsModule)
-
+        typeof(AbpTenantManagementApplicationContractsModule)
     )]
     public class AuthServerHostModule : AbpModule
     {
@@ -79,6 +68,8 @@ namespace AuthServer.Host
                 options.UseMySQL();
             });
 
+
+
             //审计日志
             Configure<AbpAuditingOptions>(options =>
             {
@@ -91,6 +82,24 @@ namespace AuthServer.Host
                 options.AutoValidate = false; //表示不验证防伪令牌
             });
 
+            //// 禁用防伪造令牌验证
+            //context.Services.AddAntiforgery(options =>
+            //{
+            //    options.Cookie.SecurePolicy = CookieSecurePolicy.None;
+            //    options.Cookie.HttpOnly = true;
+            //    options.Cookie.Name = "XSRF-TOKEN";
+            //    options.Cookie.SameSite = SameSiteMode.None;
+            //    options.SuppressXFrameOptionsHeader = false;
+            //    options.HeaderName = "X-XSRF-TOKEN";
+            //});
+
+            //Configure<CookiePolicyOptions>(options =>
+            //{
+            //    options.MinimumSameSitePolicy = SameSiteMode.None;
+            //    options.HttpOnly = HttpOnlyPolicy.Always;
+            //    options.Secure = CookieSecurePolicy.Always; // 设置Secure属性
+            //});
+
 
             Configure<AbpMultiTenancyOptions>(options =>
             {
@@ -99,11 +108,10 @@ namespace AuthServer.Host
 
             ConfigureCors(context, configuration);
             ConfigureRedisCache(context, configuration);
-            ConfigureSwaggerServices(context, configuration);
             ConfigureLocalization();
+
             context.Services.AddSameSiteCookiePolicy();
-            context.Services.AddHealthChecks();
-            //services.AddHealthChecksUI().AddInMemoryStorage();
+
         }
 
 
@@ -159,59 +167,6 @@ namespace AuthServer.Host
         }
 
         /// <summary>
-        /// swagger
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="configuration"></param>
-        private static void ConfigureSwaggerServices(ServiceConfigurationContext context, IConfiguration configuration)
-        {
-            if (Convert.ToBoolean(configuration["UseSwagger"]))
-            {
-                context.Services.AddSwaggerGen(options =>
-                {
-                    options.SwaggerDoc("v1", new OpenApiInfo { Title = "AuthServer API", Version = "v1" });
-                    options.DocInclusionPredicate((docName, description) => true);
-                    options.CustomSchemaIds(type => type.FullName);
-                    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-                    {
-                        Description = "请输入JWT令牌，例如：Bearer 12345abcdef",
-                        Name = "Authorization",
-                        In = ParameterLocation.Header,
-                        Type = SecuritySchemeType.ApiKey,
-                        Scheme = "Bearer"
-                    });
-
-                    options.AddSecurityRequirement(new OpenApiSecurityRequirement()
-                  {
-                    {
-                      new OpenApiSecurityScheme
-                      {
-                        Reference = new OpenApiReference
-                          {
-                            Type = ReferenceType.SecurityScheme,
-                            Id = "Bearer"
-                          },
-                          Scheme = "oauth2",
-                          Name = "Bearer",
-                          In = ParameterLocation.Header,
-
-                        },
-                        new List<string>()
-                      }
-                    });
-
-                    //foreach (var path in new[] { "AuthServer.Host.xml" })
-                    //{
-                    //    var basepath = AppContext.BaseDirectory;
-                    //    var xmlPath = Path.Combine(basepath, path);
-                    //    options.IncludeXmlComments(xmlPath, true);
-                    //}
-                });
-
-            }
-        }
-
-        /// <summary>
         /// 国际化
         /// </summary>
         private void ConfigureLocalization()
@@ -261,14 +216,6 @@ namespace AuthServer.Host
             app.UseCorrelationId();
             app.UseStaticFiles();
             app.UseRouting();
-            //app.UseEndpoints(endpoints =>
-            //{
-            //    endpoints.MapControllers();
-            //    endpoints.MapGet("/health", () => "Client01");
-            //});
-            app.UseHealthChecks("/health");
-            //app.UseHealthChecksUI();         
-
             app.UseCors(DefaultCorsPolicyName);
             app.UseAbpRequestLocalization();
             app.UseAuthentication();
@@ -277,23 +224,6 @@ namespace AuthServer.Host
             app.UseAuthorization();
             app.UseAuditing();
             app.UseConfiguredEndpoints();
-
-            app.UseSwagger(options =>
-            {
-                options.PreSerializeFilters.Add((swagger, httpReq) =>
-                {
-                    if (httpReq.Headers.ContainsKey("X-Request-Uri"))
-                    {
-                        var index = httpReq.Headers["X-Request-Uri"].ToString().IndexOf("/swagger/");
-                        if (index > 0)
-                        {
-                            var serverUrl = $"{httpReq.Headers["X-Request-Uri"].ToString().Substring(0, index)}/";
-                            swagger.Servers = new List<OpenApiServer> { new OpenApiServer { Url = serverUrl } };
-                        }
-                    }
-                });
-            });
-            app.UseSwaggerUI(options => options.SwaggerEndpoint("v1/swagger.json", "BaseService Service API"));
 
             AsyncHelper.RunSync(async () =>
             {
@@ -305,7 +235,5 @@ namespace AuthServer.Host
                 }
             });
         }
-
-
     }
 }

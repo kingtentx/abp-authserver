@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace BaseService.Migrations
 {
-    public partial class _001 : Migration
+    public partial class @base : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -655,6 +655,31 @@ namespace BaseService.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "base_user_feature",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    Name = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: true, comment: "名称")
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    DataKey = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    DataValue = table.Column<string>(type: "varchar(1000)", maxLength: 1000, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    FeatureType = table.Column<int>(type: "int", nullable: false, comment: "特征类型"),
+                    UserId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    TenantId = table.Column<Guid>(type: "char(36)", nullable: true, collation: "ascii_general_ci"),
+                    CreationTime = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    CreatorId = table.Column<Guid>(type: "char(36)", nullable: true, collation: "ascii_general_ci"),
+                    LastModificationTime = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    LastModifierId = table.Column<Guid>(type: "char(36)", nullable: true, collation: "ascii_general_ci")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_base_user_feature", x => x.Id);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "base_user_orgs",
                 columns: table => new
                 {
@@ -1219,6 +1244,9 @@ namespace BaseService.Migrations
 
             migrationBuilder.DropTable(
                 name: "base_role_menu");
+
+            migrationBuilder.DropTable(
+                name: "base_user_feature");
 
             migrationBuilder.DropTable(
                 name: "base_user_orgs");

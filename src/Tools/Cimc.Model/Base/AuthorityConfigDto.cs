@@ -30,7 +30,7 @@ namespace Cimc.Model.Base
         /// <summary>
         /// 权限的ID
         /// </summary>
-        public Guid Id { get; set; } = Guid.Empty; 
+        public Guid Id { get; set; } = Guid.Empty; //new Guid("00000000-0000-0000-0000-000000000000");
         /// <summary>
         /// 显示名称
         /// </summary>

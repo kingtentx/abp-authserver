@@ -5,7 +5,7 @@ namespace BaseService.Systems.TenantManagement.Dto
     /// <summary>
     /// 查询参数
     /// </summary>
-    public class GetSystemTenantsInput : PagedRequestDto
+    public class GetSystemTenantInput : PagedRequestDto
     {
         /// <summary>
         /// 关键词

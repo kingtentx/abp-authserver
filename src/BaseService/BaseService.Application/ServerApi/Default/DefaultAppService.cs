@@ -40,7 +40,7 @@ namespace BaseService.ServerApi.Default
         private readonly IRepository<Menu, Guid> _menuRepository;
         private readonly IRepository<Role, Guid> _roleRepository;
         private readonly IRepository<RoleMenu> _roleMenuRepository;
-        private readonly IRepository<UserRole> _userRoleRepository;
+
         private readonly IRepository<EdgeConfig, Guid> _edgeRepository;
         //private readonly IDistributedCache<CurrentAuthorityDto> _currentAuthorityCache;
         private readonly IDistributedCache<AuthorityConfigDto> _configCache;
@@ -51,7 +51,6 @@ namespace BaseService.ServerApi.Default
             IRepository<Menu, Guid> menuRepository,
             IRepository<Role, Guid> roleRepository,
             IRepository<RoleMenu> roleMenuRepository,
-            IRepository<UserRole> userRoleRepository,
             IRepository<EdgeConfig, Guid> edgeRepository,
             //IDistributedCache<CurrentAuthorityDto> currentAuthorityCache,
             IDistributedCache<AuthorityConfigDto> configCache,
@@ -64,7 +63,6 @@ namespace BaseService.ServerApi.Default
             _edgeRepository = edgeRepository;
             _menuRepository = menuRepository;
             _roleRepository = roleRepository;
-            _userRoleRepository = userRoleRepository;
             _currentAuthorityCache = currentAuthorityCache;
             _configCache = configCache;
             CurrentUserAuthority = currentUserAuthority;
@@ -245,7 +243,7 @@ namespace BaseService.ServerApi.Default
                 List<Guid> roleMenus = new List<Guid>();
                 if (CurrentTenant.Id == null && CurrentUser.UserName.ToLower().Equals(SystemConsts.SuperAdmin)) //当前租户为null超级管理员直接获取所有菜单{
                 {
-                    roleMenus = (await _menuRepository.GetListAsync(p => p.Hidden == false)).Select(p => p.Id).ToList();
+                    roleMenus = (await _menuRepository.GetListAsync()).Select(p => p.Id).ToList();
                 }
                 else if (CurrentTenant.Id == null)
                 {
@@ -254,27 +252,20 @@ namespace BaseService.ServerApi.Default
                 }
                 else
                 {
-                    ////当前租户的实际菜单集合
-                    //var tenantMenuIds = await (from r in await _roleRepository.GetQueryableAsync()
-                    //                           join rm in await _roleMenuRepository.GetQueryableAsync()
-                    //                           on r.Id equals rm.RoleId
-                    //                           where r.IsStatic == true && r.TenantId == CurrentTenant.Id
-                    //                           select rm.MenuId)
-                    //                           .ToListAsync();
-
-                    //var roleIds = await (await _roleRepository.GetQueryableAsync()).Where(p => CurrentUser.Roles.Contains(p.Name)).Select(p => p.Id).ToListAsync();
-                    //roleMenus = await (await _roleMenuRepository.GetQueryableAsync()).Where(p => roleIds.Contains(p.RoleId) && tenantMenuIds.Contains(p.MenuId)).Select(p => p.MenuId).ToListAsync();
-
                     //当前租户的实际菜单集合
-                    roleMenus = await (from r in await _userRoleRepository.GetQueryableAsync()
-                                       join rm in await _roleMenuRepository.GetQueryableAsync()
-                                       on r.RoleId equals rm.RoleId
-                                       where r.UserId == CurrentUser.Id && r.TenantId == CurrentTenant.Id
-                                       select rm.MenuId).ToListAsync();
+                    var tenantMenuIds = await (from r in await _roleRepository.GetQueryableAsync()
+                                               join rm in await _roleMenuRepository.GetQueryableAsync()
+                                               on r.Id equals rm.RoleId
+                                               where r.IsStatic == true && r.TenantId == CurrentTenant.Id
+                                               select rm.MenuId)
+                                               .ToListAsync();
+
+                    var roleIds = await (await _roleRepository.GetQueryableAsync()).Where(p => CurrentUser.Roles.Contains(p.Name)).Select(p => p.Id).ToListAsync();
+                    roleMenus = await (await _roleMenuRepository.GetQueryableAsync()).Where(p => roleIds.Contains(p.RoleId) && tenantMenuIds.Contains(p.MenuId)).Select(p => p.MenuId).ToListAsync();
                 }
 
 
-                var menus = await _menuRepository.GetListAsync(p => p.CategoryId <= (int)MenuType.Menu && roleMenus.Contains(p.Id) && p.Hidden == false && p.ClientType == clientType);
+                var menus = await _menuRepository.GetListAsync(p => p.CategoryId <= (int)MenuType.Menu && roleMenus.Contains(p.Id) && p.ClientType == clientType);
 
                 var root = menus.Where(p => p.Pid == null).OrderBy(p => p.Sort).ToList();
 

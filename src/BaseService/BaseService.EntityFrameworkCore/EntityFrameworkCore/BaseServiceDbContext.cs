@@ -2,15 +2,10 @@
 using BaseService.ExtModels;
 using BaseService.Systems;
 using Microsoft.EntityFrameworkCore;
-using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.Data;
 using Volo.Abp.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore.Modeling;
 using Volo.Abp.Identity;
-using Volo.Abp.Identity.EntityFrameworkCore;
-using Volo.Abp.PermissionManagement.EntityFrameworkCore;
-using Volo.Abp.SettingManagement.EntityFrameworkCore;
-using Volo.Abp.TenantManagement.EntityFrameworkCore;
 
 namespace BaseService.EntityFrameworkCore
 {
@@ -34,8 +29,7 @@ namespace BaseService.EntityFrameworkCore
         public DbSet<EdgeConfig> EdgeConfig { get; set; }
         public DbSet<AuthorityEdge> AuthorityEdge { get; set; }
         public DbSet<AuthorityGroup> AuthorityGroup { get; set; }
-
-
+        public DbSet<UserFeature> UserFeature { get; set; }
 
         public BaseServiceDbContext(DbContextOptions<BaseServiceDbContext> options)
             : base(options)
@@ -47,36 +41,25 @@ namespace BaseService.EntityFrameworkCore
         {
             base.OnModelCreating(builder);
 
+            builder.Entity<User>(b =>
+            {
+                b.ToTable(AbpIdentityDbProperties.DbTablePrefix + "Users");
+                b.ConfigureByConvention();//扩展字段ExtraProperties             
+            });
+
+            builder.Entity<Role>(b =>
+            {
+                b.ToTable(AbpIdentityDbProperties.DbTablePrefix + "Roles");
+                b.ConfigureByConvention();//扩展字段ExtraProperties               
+            });
+
+            builder.Entity<UserRole>(b =>
+            {
+                b.ToTable(AbpIdentityDbProperties.DbTablePrefix + "UserRoles");             
+                b.HasKey(k => new { k.UserId, k.RoleId });
+            });
+
             builder.ConfigureBaseService();
-
-            builder.ConfigurePermissionManagement();
-            builder.ConfigureSettingManagement();
-            //builder.ConfigureAuditLogging();
-            builder.ConfigureIdentity();
-            builder.ConfigureTenantManagement();
-         
-
-            //builder.Entity<User>(b =>
-            //{
-            //    b.ToTable(AbpIdentityDbProperties.DbTablePrefix + "Users");
-            //    b.ConfigureByConvention();//扩展字段ExtraProperties             
-            //});
-
-            //builder.Entity<Role>(b =>
-            //{
-            //    b.ToTable(AbpIdentityDbProperties.DbTablePrefix + "Roles");
-            //    b.ConfigureByConvention();//扩展字段ExtraProperties               
-            //});
-
-            //builder.Entity<UserRole>(b =>
-            //{
-            //    b.ToTable(AbpIdentityDbProperties.DbTablePrefix + "UserRoles");             
-            //    b.HasKey(k => new { k.UserId, k.RoleId });
-            //});
-
-            //builder.ConfigureBaseService();
-
-            
         }
     }
 }

@@ -20,7 +20,7 @@ namespace BaseService
 
             Log.Logger = new LoggerConfiguration()
 #if DEBUG
-                .MinimumLevel.Debug()
+                .MinimumLevel.Debug()                 
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
 #else
                 .MinimumLevel.Information()

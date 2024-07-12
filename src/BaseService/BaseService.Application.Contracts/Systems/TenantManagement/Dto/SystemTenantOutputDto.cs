@@ -1,6 +1,6 @@
 ﻿namespace BaseService.Systems.TenantManagement.Dto
 {
-    public class SystemTenanOutputDto
+    public class SystemTenantOutputDto
     {
         public string Name { get; set; }
     }

@@ -74,17 +74,5 @@ namespace Cimc.Helper
             var response = await HttpClient.PostAsync(requestUri, content);
             return await response.Content.ReadAsStringAsync();
         }
-
-        /// <summary>
-        /// 异步Post
-        /// </summary>
-        /// <param name="requestUri"></param>
-        /// <param name="content"></param>    
-        /// <returns></returns>
-        public static async Task<string> PostAsync(string requestUri, MultipartFormDataContent content)
-        {
-            var response = await HttpClient.PostAsync(requestUri, content);
-            return await response.Content.ReadAsStringAsync();
-        }
     }
 }

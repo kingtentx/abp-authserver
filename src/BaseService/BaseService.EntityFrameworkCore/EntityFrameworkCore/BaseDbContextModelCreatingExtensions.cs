@@ -106,7 +106,11 @@ namespace BaseService.EntityFrameworkCore
 
             #endregion
 
-
+            builder.Entity<UserFeature>(b =>
+            {
+                b.ToTable("base_user_feature");
+                b.ConfigureByConvention();
+            });
         }
     }
 }

@@ -70,6 +70,6 @@ namespace BaseService.Systems.MenuManagement.Dto
         /// <summary>
         /// 业务系统
         /// </summary>      
-        public string Business { get; set; }     
+        public string Business { get; set; }
     }
 }

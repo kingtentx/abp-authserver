@@ -4,6 +4,7 @@ using BaseService.BaseData;
 using BaseService.BaseData.DataDictionaryManagement.Dto;
 using BaseService.BaseData.OrganizationManagement.Dto;
 using BaseService.BaseData.PositionManagement.Dto;
+using BaseService.BaseData.UserFeatureManagement.Dto;
 using BaseService.Systems;
 using BaseService.Systems.AuditLoggingManagement.Dto;
 using BaseService.Systems.AuthorityManagerment.Dto;
@@ -60,6 +61,8 @@ namespace BaseService
 
             CreateMap<EdgeConfig, EdgeConfigDto>().ReverseMap();
 
+            CreateMap<CreateOrUpdateUserFeatureDto, UserFeature>().ReverseMap();
+            CreateMap<UserFeature, UserFeatureDto>().ReverseMap();
 
         }
     }

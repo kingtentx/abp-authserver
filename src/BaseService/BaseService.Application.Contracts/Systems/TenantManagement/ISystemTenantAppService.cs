@@ -18,7 +18,7 @@ namespace BaseService.Systems.TenantManagement
 
         Task<ResultDto<TenantDto>> Get(Guid id);
 
-        Task<ResultDto<PagedResultDto<TenantDto>>> GetList(GetSystemTenantsInput input);
+        Task<ResultDto<PagedResultDto<TenantDto>>> GetList(GetSystemTenantInput input);
 
         Task<ResultDto<ListResultDto<string>>> GetAllNames();
     }
