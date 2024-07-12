@@ -22,7 +22,7 @@ namespace BaseService.Systems.UserManagement.Dto
         /// </summary>
         public string Name { get; set; }
         /// <summary>
-        /// 用户姓
+        /// 用户名称
         /// </summary>
         public string SurName { get; set; }
         /// <summary>
@@ -40,24 +40,13 @@ namespace BaseService.Systems.UserManagement.Dto
         /// <summary>
         /// 用户角色集合
         /// </summary>
-        public List<UserInRoles> Roles { get; set; }
-        /// <summary>
-        /// 用户权限集合
-        /// </summary>
-        public List<UserInAuthoritys> Auths { get; set; }
+        public List<string> Roles { get; set; }
     }
 
-    public class UserInRoles
-    {
-        public Guid RoleId { get; set; }
-        public string RoleName { get; set; }
-    }
+    //public class UserInRoles
+    //{
+    //    public Guid RoleId { get; set; }
+    //    public string RoleName { get; set; }
+    //}
 
-    public class UserInAuthoritys
-    {
-        public Guid AuthorityId { get; set; }
-        public string AuthorityName { get; set; }
-        public bool IsChecked { get; set; }
-
-    }
 }

@@ -18,6 +18,8 @@ using Volo.Abp.Data;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Identity;
 using Volo.Abp.ObjectExtending;
+using Volo.Abp.ObjectMapping;
+using Volo.Abp.Users;
 using IdentityUser = Volo.Abp.Identity.IdentityUser;
 
 namespace BaseService.Systems.UserManagement
@@ -410,6 +412,26 @@ namespace BaseService.Systems.UserManagement
         }
 
         /// <summary>
+        /// 分页查询
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("profile")]
+        public async Task<ResultDto<CurrentUserDto>> GetCurrentUser()
+        {
+            var result = new ResultDto<CurrentUserDto>();
+           
+            //var userId = CurrentUser.Id.Value;
+            //var dto = ObjectMapper.Map<User, CurrentUserDto>(await _userRepository.GetAsync(userId));
+            var dto = ObjectMapper.Map<ICurrentUser, CurrentUserDto>(CurrentUser);
+            //var roleIds = await (await _userRoleRepository.GetQueryableAsync()).Where(p => p.UserId == userId).Select(p => p.RoleId).ToListAsync();
+            //var roles = await _roleRepository.GetListAsync(p => roleIds.Contains(p.Id));
+            //dto.Roles = roles.Select(p => p.Name).ToList();
+            result.SetData(dto);
+            return result;
+        }
+        /// <summary>
         /// 修改密码
         /// </summary>
         /// <param name="id"></param>
@@ -542,6 +564,6 @@ namespace BaseService.Systems.UserManagement
                 (await _userManager.SetRolesAsync(user, input.RoleNames)).CheckErrors();
             }
         }
-       
+
     }
 }

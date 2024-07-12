@@ -71,6 +71,7 @@ namespace AuthServer.Host
                 "email",
                 "email_verified",
                 "name",
+                "sur_name",
                 "phone_number",
                 "phone_number_verified",
                 "role",

@@ -30,6 +30,7 @@ namespace BaseService
             CreateMap<User, BaseIdentityUserDto>().ReverseMap();
             CreateMap<BaseIdentityUserCreateDto, BaseIdentityUserDto>().ReverseMap();
             CreateMap<CurrentUser, CurrentUserDto>().ReverseMap();
+            CreateMap<User, CurrentUserDto>().ReverseMap();
 
             CreateMap<IdentityRole, BaseIdentityRoleDto>().ReverseMap();
             CreateMap<Role, BaseIdentityRoleDto>().ReverseMap();

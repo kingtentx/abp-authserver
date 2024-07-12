@@ -354,7 +354,7 @@ namespace BaseService
                     { "sub", AbpClaimTypes.UserId },
                     { "role", AbpClaimTypes.Role },
                     { "email", AbpClaimTypes.Email },
-                    { "name", AbpClaimTypes.UserName }
+                    { "name", AbpClaimTypes.UserName }                  
                 };
                 var mapClaims = currentPrincipalAccessor.Principal.Claims.Where(p => map.Keys.Contains(p.Type)).ToList();
                 currentPrincipalAccessor.Principal.AddIdentity(new ClaimsIdentity(mapClaims.Select(p => new Claim(map[p.Type], p.Value, p.ValueType, p.Issuer))));
