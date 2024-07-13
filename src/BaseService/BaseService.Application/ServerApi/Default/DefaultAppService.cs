@@ -3,6 +3,7 @@ using BaseService.CurrentAuthorityService;
 using BaseService.Enums;
 using BaseService.Systems;
 using BaseService.Systems.AuthorityManagerment.Dto;
+using BaseService.Systems.MenuManagement.Dto;
 using BaseService.Systems.ProductManagement.Dto;
 using BaseService.Systems.RoleManagement.Dto;
 using BaseService.Systems.RoleMenusManagement.Dto;
@@ -232,13 +233,11 @@ namespace BaseService.ServerApi.Default
         /// <returns></returns>
         [HttpGet]
         [Route("menus")]
-        public async Task<ResultDto<ListResultDto<RoleMenuDto>>> GetRoleMenus(int clientType = 0)
+        public async Task<ResultDto<ListResultDto<MenuNodesDto>>> GetRoleMenus(int clientType = 0)
         {
-
-
             try
             {
-                var result = new ResultDto<ListResultDto<RoleMenuDto>>();
+                var result = new ResultDto<ListResultDto<MenuNodesDto>>();
 
                 List<Guid> roleMenus = new List<Guid>();
                 if (CurrentTenant.Id == null && CurrentUser.UserName.ToLower().Equals(SystemConsts.SuperAdmin)) //当前租户为null超级管理员直接获取所有菜单{
@@ -265,11 +264,11 @@ namespace BaseService.ServerApi.Default
                 }
 
 
-                var menus = await _menuRepository.GetListAsync(p => p.CategoryId <= (int)MenuType.Menu && roleMenus.Contains(p.Id) && p.ClientType == clientType);
+                var menus = await _menuRepository.GetListAsync(p => p.MenuType <= (int)MenuType.Menu && roleMenus.Contains(p.Id) && p.ClientType == clientType);
 
-                var root = menus.Where(p => p.Pid == null).OrderBy(p => p.Sort).ToList();
+                var root = menus.Where(p => p.ParentId == null).OrderBy(p => p.Sort).ToList();
 
-                var data = new ListResultDto<RoleMenuDto>(await LoadRoleMenusTree(root, menus));
+                var data = new ListResultDto<MenuNodesDto>(await LoadRoleMenusTree(root, menus));
 
                 result.SetData(data);
                 return result;
@@ -284,29 +283,43 @@ namespace BaseService.ServerApi.Default
 
         }
 
-        private async Task<List<RoleMenuDto>> LoadRoleMenusTree(List<Menu> roots, List<Menu> menus)
+        private async Task<List<MenuNodesDto>> LoadRoleMenusTree(List<Menu> roots, List<Menu> menus)
         {
-            var result = new List<RoleMenuDto>();
+            var result = new List<MenuNodesDto>();
             foreach (var root in roots)
             {
 
                 var rootpath = root.Path;
 
-                var menu = new RoleMenuDto
+                var menu = new MenuNodesDto
                 {
                     Path = rootpath,
-                    Name = root.Name,
-                    Label = root.Label,
+                    MenuType = root.MenuType,
+                    ParentId = root.ParentId,
+                    HigherMenuOptions = root.HigherMenuOptions,
+                    Title = root.Title?.Trim(),
+                    Route = root.Route?.Trim(),
                     Component = root.Component,
-                    Meta = new MenuMeta { Icon = root.Icon, Title = root.Name },
-                    AlwaysShow = root.AlwaysShow,
-                    Hidden = root.Hidden,
-                    OtherPlatformCode = root.OtherPlatformCode
+                    Sort = root.Sort,                  
+                    Redirect = root.Redirect?.Trim(),
+                    Icon = root.Icon,
+                    ExtraIcon = root.ExtraIcon,
+                    EnterTransition = root.EnterTransition,
+                    LeaveTransition = root.LeaveTransition,
+                    ActivePath = root.ActivePath,
+                    Auths = root.Auths?.Trim(),
+                    FrameSrc = root.FrameSrc?.Trim(),
+                    FrameLoading = root.FrameLoading?.Trim(),
+                    KeepAlive = root.KeepAlive,
+                    HiddenTag = root.HiddenTag,
+                    FixedTag = root.FixedTag,
+                    ShowLink = root.ShowLink,
+                    ShowParent = root.ShowParent
 
                 };
-                if (menus.Where(p => p.Pid == root.Id).Any())
+                if (menus.Where(p => p.ParentId == root.Id).Any())
                 {
-                    menu.Children = await LoadRoleMenusTree(menus.Where(p => p.Pid == root.Id).OrderBy(p => p.Sort).ToList(), menus);
+                    menu.Children = await LoadRoleMenusTree(menus.Where(p => p.ParentId == root.Id).OrderBy(p => p.Sort).ToList(), menus);
                 }
                 result.Add(menu);
             }

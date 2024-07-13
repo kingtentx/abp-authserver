@@ -1,4 +1,5 @@
 ﻿using BaseService.Systems.AuthorityManagerment.Dto;
+using BaseService.Systems.MenuManagement.Dto;
 using BaseService.Systems.RoleMenusManagement.Dto;
 using Cimc.Model.Base;
 using System;
@@ -10,7 +11,7 @@ namespace BaseService.Systems.RoleMenusManagement
 {
     public interface IRoleMenusAppService : IApplicationService
     {
-        Task<ResultDto<ListResultDto<RoleMenuDto>>> GetRoleMenus();
+        //Task<ResultDto<ListResultDto<MenuNodesDto>>> GetRoleMenus();
 
         Task<ResultDto<ListResultDto<Guid>>> GetRoleMenuIds(Guid id, int clientType);
 
@@ -24,6 +25,5 @@ namespace BaseService.Systems.RoleMenusManagement
 
         Task<ResultDto<ListResultDto<Guid>>> GetTenantMenuIds(Guid tenantId, int clientType);
 
-        //Task<ResultDto<ListResultDto<string>>> GetTenantMenuLables(Guid tenantId);
     }
 }

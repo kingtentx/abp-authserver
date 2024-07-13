@@ -1,12 +1,17 @@
-﻿using BaseService.Permissions;
+﻿using BaseService.Enums;
+using BaseService.Permissions;
 using BaseService.Systems.MenuManagement.Dto;
 using Cimc.Model.Base;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
@@ -42,30 +47,38 @@ namespace BaseService.Systems.MenuManagement
         {
             var result = new ResultDto<Guid>();
 
-            var query = await _repository.FindAsync(p => p.Label.Equals(input.Label.Trim()));
-            if (query != null)
-            {
-                result.Message = $"[{input.Label}] 菜单代码已存在。";
-                return result;
-            }
+            //var query = await _repository.FindAsync(p => p.Title.Equals(input.Label.Trim()));
+            //if (query != null)
+            //{
+            //    result.Message = $"[{input.Label}] 菜单代码已存在。";
+            //    return result;
+            //}
 
             var menu = await _repository.InsertAsync(new Menu(GuidGenerator.Create())
             {
-                FormId = input.FormId,
-                Pid = input.Pid,
-                Name = input.Name?.Trim(),
-                Label = input.Label?.Trim(),
-                CategoryId = input.CategoryId,
+                MenuType = input.MenuType,
+                ParentId = input.ParentId,
+                HigherMenuOptions = input.HigherMenuOptions,
+                Title = input.Title?.Trim(),
+                Route = input.Route?.Trim(),
+                Component = input.Component,
                 Sort = input.Sort,
                 Path = input.Path?.Trim(),
-                Component = input.Component?.Trim(),
-                Permission = input.Permission?.Trim(),
+                Redirect = input.Redirect?.Trim(),
                 Icon = input.Icon,
-                AlwaysShow = input.AlwaysShow,
-                Hidden = input.Hidden,
-                ClientType = input.ClientType,
-                Business = input.Business,
-                OtherPlatformCode = input.OtherPlatformCode
+                ExtraIcon = input.ExtraIcon,
+                EnterTransition = input.EnterTransition,
+                LeaveTransition = input.LeaveTransition,
+                ActivePath = input.ActivePath,
+                Auths = input.Auths?.Trim(),
+                FrameSrc = input.FrameSrc?.Trim(),
+                FrameLoading = input.FrameLoading?.Trim(),
+                KeepAlive = input.KeepAlive,
+                HiddenTag = input.HiddenTag,
+                FixedTag = input.FixedTag,
+                ShowLink = input.ShowLink,
+                ShowParent = input.ShowParent,
+                ClientType = input.ClientType
             });
 
             result.SetData(menu.Id);
@@ -84,28 +97,37 @@ namespace BaseService.Systems.MenuManagement
         {
             var result = new ResultDto<bool>();
 
-            var query = await _repository.FindAsync(p => p.Label.Equals(input.Label.Trim()) && p.Id != input.Id);
-            if (query != null)
-            {
-                result.Message = $"[{input.Label}] 菜单代码已存在。";
-                return result;
-            }
+            //var query = await _repository.FindAsync(p => p.Label.Equals(input.Label.Trim()) && p.Id != input.Id);
+            //if (query != null)
+            //{
+            //    result.Message = $"[{input.Label}] 菜单代码已存在。";
+            //    return result;
+            //}
 
             var menu = await _repository.GetAsync(input.Id.Value);
-            menu.Pid = input.Pid;
-            menu.CategoryId = input.CategoryId;
-            menu.Name = input.Name?.Trim();
-            menu.Label = input.Label?.Trim();
+            menu.MenuType = input.MenuType;
+            menu.ParentId = input.ParentId;
+            menu.HigherMenuOptions = input.HigherMenuOptions;
+            menu.Title = input.Title?.Trim();
+            menu.Route = input.Route?.Trim();
+            menu.Component = input.Component;
             menu.Sort = input.Sort;
             menu.Path = input.Path?.Trim();
-            menu.Component = input.Component?.Trim();
-            menu.Permission = input.Permission?.Trim();
+            menu.Redirect = input.Redirect?.Trim();
             menu.Icon = input.Icon;
-            menu.AlwaysShow = input.AlwaysShow;
-            menu.Hidden = input.Hidden;          
+            menu.ExtraIcon = input.ExtraIcon;
+            menu.EnterTransition = input.EnterTransition;
+            menu.LeaveTransition = input.LeaveTransition;
+            menu.ActivePath = input.ActivePath;
+            menu.Auths = input.Auths?.Trim();
+            menu.FrameSrc = input.FrameSrc?.Trim();
+            menu.FrameLoading = input.FrameLoading?.Trim();
+            menu.KeepAlive = input.KeepAlive;
+            menu.HiddenTag = input.HiddenTag;
+            menu.FixedTag = input.FixedTag;
+            menu.ShowLink = input.ShowLink;
+            menu.ShowParent = input.ShowParent;
             menu.ClientType = input.ClientType;
-            menu.Business = input.Business?.Trim();
-            menu.OtherPlatformCode = input.OtherPlatformCode?.Trim();
 
             result.SetData(true);
             return result;
@@ -147,8 +169,8 @@ namespace BaseService.Systems.MenuManagement
         {
             var result = new ResultDto<ListResultDto<MenuDto>>();
 
-            var query = (await _repository.GetQueryableAsync()).WhereIf(!string.IsNullOrWhiteSpace(input.Filter), _ => _.Name.Contains(input.Filter));
-            var items = await query.OrderBy(input.Sorting ?? "Sort")
+            var query = (await _repository.GetQueryableAsync()).WhereIf(!string.IsNullOrWhiteSpace(input.Filter), _ => _.Title.Contains(input.Filter));
+            var items = await query.OrderBy(input.Sorting ?? nameof(Menu.Sort))
                                  .Skip(input.SkipCount)
                                  .Take(input.MaxResultCount)
                                  .ToListAsync();
@@ -171,8 +193,9 @@ namespace BaseService.Systems.MenuManagement
 
             var query = await _repository.GetAsync(id);
             var dto = ObjectMapper.Map<Menu, MenuDto>(query);
-            if (dto.Pid.HasValue)
-                dto.ParentLabel = (await _repository.FirstOrDefaultAsync(_ => _.Id == query.Pid))?.Label;
+
+            //if (dto.ParentId.HasValue)
+            //    dto.ParentLabel = (await _repository.FirstOrDefaultAsync(_ => _.Id == query.ParentId))?.Label;
 
             result.SetData(dto);
             return result;
@@ -192,7 +215,7 @@ namespace BaseService.Systems.MenuManagement
             if (CurrentUser.TenantId == null)
             {
                 var menus = await _repository.GetListAsync(p => p.ClientType == clientType);
-                var root = menus.Where(_ => _.Pid == null).OrderBy(_ => _.Sort).ToList();
+                var root = menus.Where(_ => _.ParentId == null).OrderBy(_ => _.Sort).ToList();
                 var data = new ListResultDto<MenuNodesDto>(LoadMenusTree(root, menus));
                 result.SetData(data);
             }
@@ -210,26 +233,33 @@ namespace BaseService.Systems.MenuManagement
                 var menu = new MenuNodesDto
                 {
                     Id = root.Id,
-                    Pid = root.Pid,
-                    CategoryId = root.CategoryId,
-                    Path = root.Path,
-                    Name = root.Name,
-                    Label = root.Label,
+                    MenuType = root.MenuType,
+                    ParentId = root.ParentId,
+                    HigherMenuOptions = root.HigherMenuOptions,
+                    Title = root.Title?.Trim(),
+                    Route = root.Route?.Trim(),
                     Component = root.Component,
-                    Meta = new NodeMeta { Icon = root.Icon, Title = root.Name },
-                    AlwaysShow = root.AlwaysShow,
-                    Hidden = root.Hidden,
                     Sort = root.Sort,
+                    Path = root.Path?.Trim(),
+                    Redirect = root.Redirect?.Trim(),
                     Icon = root.Icon,
-                    Permission = root.Permission,
-                    ClientType = root.ClientType,
-                    Business = root.Business,
-                    OtherPlatformCode = root.OtherPlatformCode
+                    ExtraIcon = root.ExtraIcon,
+                    EnterTransition = root.EnterTransition,
+                    LeaveTransition = root.LeaveTransition,
+                    ActivePath = root.ActivePath,
+                    Auths = root.Auths?.Trim(),
+                    FrameSrc = root.FrameSrc?.Trim(),
+                    FrameLoading = root.FrameLoading?.Trim(),
+                    KeepAlive = root.KeepAlive,
+                    HiddenTag = root.HiddenTag,
+                    FixedTag = root.FixedTag,
+                    ShowLink = root.ShowLink,
+                    ShowParent = root.ShowParent,
 
                 };
-                if (menus.Where(_ => _.Pid == root.Id).Any())
+                if (menus.Where(_ => _.ParentId == root.Id).Any())
                 {
-                    menu.Children = LoadMenusTree(menus.Where(_ => _.Pid == root.Id).OrderBy(_ => _.Sort).ToList(), menus);
+                    menu.Children = LoadMenusTree(menus.Where(_ => _.ParentId == root.Id).OrderBy(_ => _.Sort).ToList(), menus);
                 }
                 else
                 {

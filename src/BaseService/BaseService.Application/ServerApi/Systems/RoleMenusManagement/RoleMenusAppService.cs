@@ -1,6 +1,7 @@
 ﻿using BaseService.Consts;
 using BaseService.Enums;
 using BaseService.Systems.AuthorityManagerment.Dto;
+using BaseService.Systems.MenuManagement.Dto;
 using BaseService.Systems.RoleMenusManagement;
 using BaseService.Systems.RoleMenusManagement.Dto;
 using Cimc.Model.Base;
@@ -27,8 +28,7 @@ namespace BaseService.Systems.UserMenusManagement
     [Route("api/base/role-menu")]
     [Authorize]
     public class RoleMenusAppService : ApplicationService, IRoleMenusAppService
-    {
-        //public IIdentityRoleRepository RoleRepository { get; }
+    {      
         private readonly IRepository<Menu, Guid> _menuRepository;
         private readonly IRepository<RoleMenu> _roleMenuRepository;
         private readonly IRepository<RoleAuthority> _roleAuthorityRepository;
@@ -40,8 +40,7 @@ namespace BaseService.Systems.UserMenusManagement
 
         private List<Menu> tenantMenus = new List<Menu>();
 
-        public RoleMenusAppService(
-            //IIdentityRoleRepository roleRepository,
+        public RoleMenusAppService(          
             IRepository<Menu, Guid> menuRepository,
             IRepository<RoleMenu> roleMenuRepository,
             IRepository<RoleAuthority> roleAuthorityRepository,
@@ -99,12 +98,12 @@ namespace BaseService.Systems.UserMenusManagement
                 List<UpdatePermissionDto> permissions = new();
                 foreach (var menu in menuList)
                 {
-                    if (!string.IsNullOrWhiteSpace(menu.Permission))
+                    if (!string.IsNullOrWhiteSpace(menu.Auths))
                     {
                         permissions.Add(
                             new UpdatePermissionDto()
                             {
-                                Name = menu.Permission,
+                                Name = menu.Auths,
                                 IsGranted = true
                             });
                     }
@@ -120,9 +119,7 @@ namespace BaseService.Systems.UserMenusManagement
 
                 #endregion
 
-                #region 更新角色菜单
-                //await _roleMenuRepository.DeleteAsync(p => p.RoleId == input.RoleId);
-                //await _roleMenuRepository.InsertManyAsync(roleMenus);
+                #region 更新角色菜单          
 
                 //删除角色旧菜单
                 var old_list = await _menuRepository.GetListAsync(p => p.ClientType == input.ClientType);
@@ -210,39 +207,39 @@ namespace BaseService.Systems.UserMenusManagement
             return result;
         }
 
-        /// <summary>
-        /// 获取角色所有菜单
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("menus")]
-        public async Task<ResultDto<ListResultDto<RoleMenuDto>>> GetRoleMenus()
-        {
-            var result = new ResultDto<ListResultDto<RoleMenuDto>>();
+        ///// <summary>
+        ///// 获取角色所有菜单
+        ///// </summary>
+        ///// <returns></returns>
+        //[HttpGet]
+        //[Route("menus")]
+        //public async Task<ResultDto<ListResultDto<MenuNodesDto>>> GetRoleMenus()
+        //{
+        //    var result = new ResultDto<ListResultDto<MenuNodesDto>>();
 
-            var roleIds = await (await _roleRepository.GetQueryableAsync()).Where(p => CurrentUser.Roles.Contains(p.Name)).Select(p => p.Id).ToListAsync();
-            // var roleMenus = await (await _roleMenuRepository.GetQueryableAsync()).Where(p => roleIds.Contains(p.RoleId)).Select(p => p.MenuId).ToListAsync();
-            //var menus = await _menuRepository.GetListAsync(p => p.CategoryId == 1 && roleMenus.Contains(p.Id));
-            List<Guid> roleMenus = new List<Guid>();
-            List<Menu> menus = new List<Menu>();
+        //    var roleIds = await (await _roleRepository.GetQueryableAsync()).Where(p => CurrentUser.Roles.Contains(p.Name)).Select(p => p.Id).ToListAsync();
+        //    // var roleMenus = await (await _roleMenuRepository.GetQueryableAsync()).Where(p => roleIds.Contains(p.RoleId)).Select(p => p.MenuId).ToListAsync();
+        //    //var menus = await _menuRepository.GetListAsync(p => p.CategoryId == 1 && roleMenus.Contains(p.Id));
+        //    List<Guid> roleMenus = new List<Guid>();
+        //    List<Menu> menus = new List<Menu>();
 
-            if (CurrentUser.UserName.ToLower().Equals(SystemConsts.SuperAdmin))//超级管理员直接获取所有菜单
-            {
-                //roleMenus = await (await _menuRepository.GetQueryableAsync()).Select(p => p.Id).ToListAsync();
-                menus = await _menuRepository.GetListAsync(p => p.CategoryId <= (int)MenuType.Menu);
-            }
-            else
-            {
-                roleMenus = await (await _roleMenuRepository.GetQueryableAsync()).Where(p => roleIds.Contains(p.RoleId)).Select(p => p.MenuId).ToListAsync();
-                menus = await _menuRepository.GetListAsync(p => p.CategoryId <= (int)MenuType.Menu && roleMenus.Contains(p.Id));
-            }
+        //    if (CurrentUser.UserName.ToLower().Equals(SystemConsts.SuperAdmin))//超级管理员直接获取所有菜单
+        //    {
+        //        //roleMenus = await (await _menuRepository.GetQueryableAsync()).Select(p => p.Id).ToListAsync();
+        //        menus = await _menuRepository.GetListAsync(p => p.MenuType <= (int)MenuType.Menu);
+        //    }
+        //    else
+        //    {
+        //        roleMenus = await (await _roleMenuRepository.GetQueryableAsync()).Where(p => roleIds.Contains(p.RoleId)).Select(p => p.MenuId).ToListAsync();
+        //        menus = await _menuRepository.GetListAsync(p => p.MenuType <= (int)MenuType.Menu && roleMenus.Contains(p.Id));
+        //    }
 
-            var root = menus.Where(p => p.Pid == null).OrderBy(p => p.Sort).ToList();
-            var data = new ListResultDto<RoleMenuDto>(LoadRoleMenusTree(root, menus));
+        //    var root = menus.Where(p => p.ParentId == null).OrderBy(p => p.Sort).ToList();
+        //    var data = new ListResultDto<MenuNodesDto>(LoadRoleMenusTree(root, menus));
 
-            result.SetData(data);
-            return result;
-        }
+        //    result.SetData(data);
+        //    return result;
+        //}
 
         /// <summary>
         /// 获取角色菜单ID
@@ -255,11 +252,6 @@ namespace BaseService.Systems.UserMenusManagement
         public async Task<ResultDto<ListResultDto<Guid>>> GetRoleMenuIds(Guid id, int clientType = 0)
         {
             var result = new ResultDto<ListResultDto<Guid>>();
-
-            //var menus = (await _menuRepository.GetListAsync(p => p.ClientType == clientType)).Select(p => p.Id);
-            //var menuIds = await _roleMenuRepository.GetListAsync(p => menus.Contains(p.MenuId) && p.RoleId == id);
-            //var data = new ListResultDto<Guid>(menuIds.Select(p => p.MenuId).ToList());
-
             var menus = await _menuRepository.GetQueryableAsync();
             var role_menus = await _roleMenuRepository.GetQueryableAsync();
 
@@ -276,29 +268,44 @@ namespace BaseService.Systems.UserMenusManagement
             return result;
         }
 
-        private List<RoleMenuDto> LoadRoleMenusTree(List<Menu> roots, List<Menu> menus)
-        {
-            var result = new List<RoleMenuDto>();
-            foreach (var root in roots)
-            {
-                var menu = new RoleMenuDto
-                {
-                    Path = root.Path,
-                    Name = root.Name,
-                    Label = root.Label,
-                    Component = root.Component,
-                    Meta = new MenuMeta { Icon = root.Icon, Title = root.Name },
-                    AlwaysShow = root.AlwaysShow,
-                    Hidden = root.Hidden
-                };
-                if (menus.Where(p => p.Pid == root.Id).Any())
-                {
-                    menu.Children = LoadRoleMenusTree(menus.Where(p => p.Pid == root.Id).OrderBy(p => p.Sort).ToList(), menus);
-                }
-                result.Add(menu);
-            }
-            return result;
-        }
+        //private List<MenuNodesDto> LoadRoleMenusTree(List<Menu> roots, List<Menu> menus)
+        //{
+        //    var result = new List<MenuNodesDto>();
+        //    foreach (var root in roots)
+        //    {
+        //        var menu = new MenuNodesDto
+        //        {
+        //            Path = root.Path,                 
+        //            MenuType = root.MenuType,
+        //            ParentId = root.ParentId,
+        //            HigherMenuOptions = root.HigherMenuOptions,
+        //            Title = root.Title?.Trim(),
+        //            Route = root.Route?.Trim(),
+        //            Component = root.Component,
+        //            Sort = root.Sort,
+        //            Redirect = root.Redirect?.Trim(),
+        //            Icon = root.Icon,
+        //            ExtraIcon = root.ExtraIcon,
+        //            EnterTransition = root.EnterTransition,
+        //            LeaveTransition = root.LeaveTransition,
+        //            ActivePath = root.ActivePath,
+        //            Auths = root.Auths?.Trim(),
+        //            FrameSrc = root.FrameSrc?.Trim(),
+        //            FrameLoading = root.FrameLoading?.Trim(),
+        //            KeepAlive = root.KeepAlive,
+        //            HiddenTag = root.HiddenTag,
+        //            FixedTag = root.FixedTag,
+        //            ShowLink = root.ShowLink,
+        //            ShowParent = root.ShowParent
+        //        };
+        //        if (menus.Where(p => p.ParentId == root.Id).Any())
+        //        {
+        //            menu.Children = LoadRoleMenusTree(menus.Where(p => p.ParentId == root.Id).OrderBy(p => p.Sort).ToList(), menus);
+        //        }
+        //        result.Add(menu);
+        //    }
+        //    return result;
+        //}
 
         #region 权限对象
 

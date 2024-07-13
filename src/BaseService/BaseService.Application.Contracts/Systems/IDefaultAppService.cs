@@ -1,4 +1,5 @@
 ﻿using BaseService.Systems.AuthorityManagerment.Dto;
+using BaseService.Systems.MenuManagement.Dto;
 using BaseService.Systems.ProductManagement.Dto;
 using BaseService.Systems.RoleMenusManagement.Dto;
 using Cimc.Model.Base;
@@ -17,7 +18,7 @@ namespace BaseService.Systems
 
         Task<ResultDto<bool>> SetCurrentAuthority(Guid id);
 
-        Task<ResultDto<ListResultDto<RoleMenuDto>>> GetRoleMenus(int clientType);
+        Task<ResultDto<ListResultDto<MenuNodesDto>>> GetRoleMenus(int clientType);
 
         Task<ResultDto<AuthorityConfigDto>> GetAuthorityEdgeConfig(string appId);
 

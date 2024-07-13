@@ -9,6 +9,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="Views\**" />
+	  <Content Remove="Views\**" />
+	  <EmbeddedResource Remove="Views\**" />
+	  <None Remove="Views\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.18" />
 		<PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="6.0.18" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.18">
@@ -40,9 +47,6 @@
 		<None Update="Dockerfile">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
-	</ItemGroup>
-	<ItemGroup>
-		<Folder Include="Views\" />
 	</ItemGroup>
 	<ProjectExtensions>
 		<VisualStudio>
