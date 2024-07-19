@@ -174,13 +174,9 @@ namespace BaseService
         /// 格式化日期
         /// </summary>
         public void ConfigureDateTime()
-        {
-            Configure<MvcNewtonsoftJsonOptions>(options =>
-            {
-                options.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";//对类型为DateTime的生效
-            });
+        {           
             Configure<AbpJsonOptions>(options =>
-                options.DefaultDateTimeFormat = "yyyy-MM-dd HH:mm:ss" //对类型为DateTimeOffset生效
+                options.OutputDateTimeFormat = "yyyy-MM-dd HH:mm:ss"    //对类型为DateTimeOffset生效
             );
         }
         /// <summary>

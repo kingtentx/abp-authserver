@@ -2,20 +2,20 @@
 
 	<PropertyGroup>
 		<OutputType>Library</OutputType>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>net8.0</TargetFramework>
 		<RootNamespace>BaseService</RootNamespace>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 		<DocumentationFile></DocumentationFile>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Serilog" Version="3.0.1" />
-		<PackageReference Include="Volo.Abp.Account.Application" Version="6.0.3" />
-		<PackageReference Include="Volo.Abp.AutoMapper" Version="6.0.3" />
-		<PackageReference Include="Volo.Abp.PermissionManagement.Application" Version="6.0.3" />
-		<PackageReference Include="Volo.Abp.TenantManagement.Application" Version="6.0.3" />
-		<PackageReference Include="Volo.Abp.Identity.Application" Version="6.0.3" />
-		<PackageReference Include="Volo.Abp.AspNetCore.Mvc" Version="6.0.3" />
+		<PackageReference Include="Serilog" Version="4.0.0" />
+		<PackageReference Include="Volo.Abp.Account.Application" Version="8.2.0" />
+		<PackageReference Include="Volo.Abp.AutoMapper" Version="8.2.0" />
+		<PackageReference Include="Volo.Abp.PermissionManagement.Application" Version="8.2.0" />
+		<PackageReference Include="Volo.Abp.TenantManagement.Application" Version="8.2.0" />
+		<PackageReference Include="Volo.Abp.Identity.Application" Version="8.2.0" />
+		<PackageReference Include="Volo.Abp.AspNetCore.Mvc" Version="8.2.0" />
 	</ItemGroup>
 
 	<ItemGroup>

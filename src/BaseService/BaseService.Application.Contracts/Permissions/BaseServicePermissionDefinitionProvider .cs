@@ -10,7 +10,7 @@ namespace BaseService.Permissions
 
         public override void Define(IPermissionDefinitionContext context)
         {
-            var permission = context.AddGroup(BaseServicePermissions.BaseService, L("BaseService"), MultiTenancySides.Tenant);
+            var permission = context.AddGroup(BaseServicePermissions.BaseService, L("BaseService"));
 
             var auditLogging = permission.AddPermission(BaseServicePermissions.AuditLogging.Default, L("AuditLogging"));
             //字典
@@ -18,6 +18,7 @@ namespace BaseService.Permissions
             dictionary.AddChild(BaseServicePermissions.DataDictionary.Update, L("Edit"));
             dictionary.AddChild(BaseServicePermissions.DataDictionary.Delete, L("Delete"));
             dictionary.AddChild(BaseServicePermissions.DataDictionary.Create, L("Create"));
+
             //菜单
             var menu = permission.AddPermission(BaseServicePermissions.Menu.Default, L("Menu"));
             menu.AddChild(BaseServicePermissions.Menu.Update, L("Edit"));
@@ -51,17 +52,6 @@ namespace BaseService.Permissions
             edge.AddChild(BaseServicePermissions.Edge.Delete, L("Delete"));
             edge.AddChild(BaseServicePermissions.Edge.Create, L("Create"));
 
-            ////设备模型
-            //var deviceModel = permission.AddPermission(BaseServicePermissions.DeviceModel.Default, L("Position"));
-            //deviceModel.AddChild(BaseServicePermissions.DeviceModel.Update, L("Edit"));
-            //deviceModel.AddChild(BaseServicePermissions.DeviceModel.Delete, L("Delete"));
-            //deviceModel.AddChild(BaseServicePermissions.DeviceModel.Create, L("Create"));
-
-            ////设备
-            //var device = permission.AddPermission(BaseServicePermissions.Device.Default, L("Position"));
-            //device.AddChild(BaseServicePermissions.Device.Update, L("Edit"));
-            //device.AddChild(BaseServicePermissions.Device.Delete, L("Delete"));
-            //device.AddChild(BaseServicePermissions.Device.Create, L("Create"));
         }
 
         private static LocalizableString L(string name)
